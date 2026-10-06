@@ -52,7 +52,7 @@ export default function LoginPage() {
       <div className="fixed inset-0 z-0 bg-ink/93" />
 
       <div className="relative z-1 min-h-screen flex items-center justify-center p-5">
-        <div className="w-full max-w-[420px] bg-paper rounded-2xl shadow-[0_20px_50px_rgba(34,32,29,0.18)] p-10">
+        <div className="w-full max-w-[420px] bg-paper rounded-2xl shadow-[0_20px_50px_rgba(15,17,21,0.18)] p-10">
           <div className="flex flex-col items-center text-center mb-7">
             <img
               src="/assets/logo/copper-fork-mark.svg"

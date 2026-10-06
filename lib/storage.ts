@@ -18,8 +18,8 @@ function uid(prefix: string): string {
 }
 
 async function seedDatabase(): Promise<void> {
-  const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true });
-  if (userCount && userCount > 0) return;
+  const { count: menuCount } = await supabase.from('menu_items').select('*', { count: 'exact', head: true });
+  if (menuCount && menuCount > 0) return;
 
   const users: User[] = [
     { id: 'u_admin', username: 'admin', password: 'admin123', role: 'admin', name: 'System Administrator' },
@@ -136,7 +136,7 @@ async function seedDatabase(): Promise<void> {
   await supabase.from('inventory').insert(inventory);
   await supabase.from('menu_items').insert(menu);
   await supabase.from('tables').insert(tables);
-  await supabase.from('settings').upsert({ id: 'global', tax_rate: 0.08, currency: '৳', restaurant_name: 'The Copper Fork' });
+  await supabase.from('settings').upsert({ id: 'global', tax_rate: 0.08, currency: 'BDT', restaurant_name: 'The Copper Fork' });
 }
 
 if (typeof window !== 'undefined') {
@@ -208,7 +208,7 @@ const Store = {
         restaurantName: data.restaurant_name
       } as Settings;
     }
-    return { taxRate: 0.08, currency: '৳', restaurantName: 'Restaurant' };
+    return { taxRate: 0.08, currency: 'BDT', restaurantName: 'Restaurant' };
   },
 
   saveSettings: async (v: Settings): Promise<boolean> => {

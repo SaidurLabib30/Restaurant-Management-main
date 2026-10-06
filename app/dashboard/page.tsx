@@ -36,15 +36,15 @@ function StatCard({ label, value, sub, icon, iconBg, iconColor }: {
   iconColor: string;
 }) {
   return (
-    <div className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
+    <div className="bg-accent-light border border-accent/20 rounded-2xl p-5 shadow-sm">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs uppercase tracking-wider font-semibold text-muted">{label}</span>
+        <span className="text-xs uppercase tracking-wider font-semibold text-accent-ink">{label}</span>
         <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${iconBg}`}>
           <span className={iconColor}>{icon}</span>
         </div>
       </div>
       <div className="font-display text-3xl font-bold text-ink">{value}</div>
-      <div className="text-xs text-muted mt-1">{sub}</div>
+      <div className="text-xs text-ink-soft mt-1">{sub}</div>
     </div>
   );
 }
@@ -53,7 +53,7 @@ function LowStockAlerts({ items }: { items: InventoryItem[] }) {
   if (!items.length) {
     return (
       <ul className="space-y-3">
-        <li className="flex items-center justify-between p-3 rounded-lg bg-stone-50">
+        <li className="flex items-center justify-between p-3 rounded-lg bg-white/80">
           <span className="text-sm font-medium text-ink">All ingredients well stocked</span>
         </li>
       </ul>
@@ -65,10 +65,10 @@ function LowStockAlerts({ items }: { items: InventoryItem[] }) {
       {items.slice(0, 8).map(item => {
         const status = inventoryStatus(item);
         return (
-          <li key={item.id} className="flex items-center justify-between p-3 rounded-lg bg-stone-50">
+          <li key={item.id} className="flex items-center justify-between p-3 rounded-lg bg-white/80">
             <span className="text-sm font-medium text-ink">{escapeHtml(item.name)}</span>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted font-mono">{item.quantity}{item.unit} left</span>
+              <span className="text-xs text-ink-soft font-mono">{item.quantity}{item.unit} left</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold ${
                 status === 'out' ? 'bg-danger-tint text-danger' : 'bg-amber-tint text-amber'
               }`}>
@@ -90,7 +90,7 @@ function RecentOrdersTable({ orders, tables }: { orders: Order[]; tables: Table[
 
   if (!recent.length) {
     return (
-      <div className="text-center py-10 text-muted">
+      <div className="text-center py-10 text-ink-soft">
         <p>No orders placed yet today.</p>
       </div>
     );
@@ -99,26 +99,26 @@ function RecentOrdersTable({ orders, tables }: { orders: Order[]; tables: Table[
   return (
     <table className="w-full border-collapse">
       <thead>
-        <tr className="border-b border-line">
-          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-muted">Ticket</th>
-          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-muted">Table</th>
-          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-muted">Items</th>
-          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-muted">Status</th>
-          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-muted">Placed</th>
+        <tr className="border-b border-accent/20">
+          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-ink-soft">Ticket</th>
+          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-ink-soft">Table</th>
+          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-ink-soft">Items</th>
+          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-ink-soft">Status</th>
+          <th className="text-left px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-ink-soft">Placed</th>
         </tr>
       </thead>
       <tbody>
         {recent.map(order => (
-          <tr key={order.id} className="border-b border-line-soft hover:bg-stone-50">
-            <td className="px-3 py-3 font-mono text-sm">#{order.id.slice(-5).toUpperCase()}</td>
-            <td className="px-3 py-3 text-sm">Table {tableMap[order.tableId] || '—'}</td>
-            <td className="px-3 py-3 text-sm">{order.items.reduce((s, i) => s + i.qty, 0)} items</td>
+          <tr key={order.id} className="border-b border-accent/10 hover:bg-white/60">
+            <td className="px-3 py-3 font-mono text-sm text-ink">#{order.id.slice(-5).toUpperCase()}</td>
+            <td className="px-3 py-3 text-sm text-ink">Table {tableMap[order.tableId] || '—'}</td>
+            <td className="px-3 py-3 text-sm text-ink">{order.items.reduce((s, i) => s + i.qty, 0)} items</td>
             <td className="px-3 py-3">
               <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold ${statusBadge(order.status)}`}>
                 {order.status}
               </span>
             </td>
-            <td className="px-3 py-3 text-sm text-muted">{timeAgo(order.createdAt)}</td>
+            <td className="px-3 py-3 text-sm text-ink-soft">{timeAgo(order.createdAt)}</td>
           </tr>
         ))}
       </tbody>
@@ -183,63 +183,65 @@ export default function DashboardPage() {
 
   return (
     <AppShell activePath="/dashboard">
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <StatCard
-            label="Sales Today"
-            value={money(salesToday)}
-            sub={`${invoices.filter(i => isToday(i.createdAt)).length} invoices billed`}
-            icon={<CreditCard className="w-4 h-4" />}
-            iconBg="bg-accent-tint"
-            iconColor="text-accent-ink"
-          />
-          <StatCard
-            label="Orders Today"
-            value={ordersToday.toString()}
-            sub={`${pending} currently pending`}
-            icon={<Package className="w-4 h-4" />}
-            iconBg="bg-steel-tint"
-            iconColor="text-steel"
-          />
-          <StatCard
-            label="Tables"
-            value={<><span>{available}/{tables.length}</span> <span className="text-base text-muted font-body">free</span></>}
-            sub={`${occupied} occupied · ${reserved} reserved`}
-            icon={<Users className="w-4 h-4" />}
-            iconBg="bg-herb-tint"
-            iconColor="text-herb"
-          />
-          <StatCard
-            label="Inventory Alerts"
-            value={lowStockItems.length.toString()}
-            sub={`${inventory.filter(i => inventoryStatus(i) === 'out').length} out of stock`}
-            icon={<AlertTriangle className="w-4 h-4" />}
-            iconBg="bg-amber-tint"
-            iconColor="text-amber"
-          />
-        </div>
+      <div className="bg-ink text-paper min-h-[calc(100vh-4rem)]">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <StatCard
+              label="Sales Today"
+              value={money(salesToday)}
+              sub={`${invoices.filter(i => isToday(i.createdAt)).length} invoices billed`}
+              icon={<CreditCard className="w-4 h-4" />}
+              iconBg="bg-accent-tint"
+              iconColor="text-accent-ink"
+            />
+            <StatCard
+              label="Orders Today"
+              value={ordersToday.toString()}
+              sub={`${pending} currently pending`}
+              icon={<Package className="w-4 h-4" />}
+              iconBg="bg-steel-tint"
+              iconColor="text-steel"
+            />
+            <StatCard
+              label="Tables"
+              value={<><span>{available}/{tables.length}</span> <span className="text-base text-paper/70 font-body">free</span></>}
+              sub={`${occupied} occupied · ${reserved} reserved`}
+              icon={<Users className="w-4 h-4" />}
+              iconBg="bg-herb-tint"
+              iconColor="text-herb"
+            />
+            <StatCard
+              label="Inventory Alerts"
+              value={lowStockItems.length.toString()}
+              sub={`${inventory.filter(i => inventoryStatus(i) === 'out').length} out of stock`}
+              icon={<AlertTriangle className="w-4 h-4" />}
+              iconBg="bg-amber-tint"
+              iconColor="text-amber"
+            />
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-7 gap-5">
-          <div className="lg:col-span-4">
-            <div className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
-              <h3 className="font-display text-lg font-semibold mb-4">Revenue — last 7 days</h3>
-              <BarChart data={chartData} color="accent" height={160} />
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-5">
+            <div className="lg:col-span-4">
+              <div className="bg-accent-light border border-accent/20 rounded-2xl p-5 shadow-sm">
+                <h3 className="font-display text-lg font-semibold mb-4 text-ink">Revenue — last 7 days</h3>
+                <BarChart data={chartData} color="accent" height={160} />
+              </div>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="bg-accent-light border border-accent/20 rounded-2xl p-5 shadow-sm">
+                <h3 className="font-display text-lg font-semibold mb-4 text-ink">Low stock & out of stock</h3>
+                <LowStockAlerts items={lowStockItems} />
+              </div>
             </div>
           </div>
-          <div className="lg:col-span-3">
-            <div className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
-              <h3 className="font-display text-lg font-semibold mb-4">Low stock & out of stock</h3>
-              <LowStockAlerts items={lowStockItems} />
-            </div>
-          </div>
-        </div>
 
-        <div className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display text-lg font-semibold">Recent orders</h3>
-            <a href="/orders" className="text-sm font-medium text-accent hover:underline">View all</a>
+          <div className="bg-accent-light border border-accent/20 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-semibold text-ink">Recent orders</h3>
+              <a href="/orders" className="text-sm font-medium text-accent hover:underline">View all</a>
+            </div>
+            <RecentOrdersTable orders={orders} tables={tables} />
           </div>
-          <RecentOrdersTable orders={orders} tables={tables} />
         </div>
       </div>
     </AppShell>

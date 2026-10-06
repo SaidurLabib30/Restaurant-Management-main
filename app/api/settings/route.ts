@@ -6,7 +6,7 @@ export async function GET() {
     const { data, error } = await supabase.from('settings').select('*').eq('id', 'global').maybeSingle();
     if (error) throw error;
     if (!data) {
-      return NextResponse.json({ taxRate: 0.08, currency: '৳', restaurantName: 'Restaurant' });
+      return NextResponse.json({ taxRate: 0.08, currency: 'BDT', restaurantName: 'Restaurant' });
     }
     return NextResponse.json({
       taxRate: data.tax_rate,

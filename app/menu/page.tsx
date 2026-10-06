@@ -100,7 +100,7 @@ export default function MenuPage() {
     if (editingItem) {
       const m = menuData.find(x => x.id === editingItem.id);
       if (m) {
-        Object.assign(m, { name: categoryVal, price: priceVal, status: statusVal as 'available' | 'unavailable', description, image: pendingImage || '', recipe });
+        Object.assign(m, { name, price: priceVal, status: statusVal as 'available' | 'unavailable', description, image: pendingImage || '', recipe });
       }
     } else {
       menuData.push({
@@ -151,9 +151,9 @@ export default function MenuPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="search-bar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search dishes..." className="w-full bg-transparent border-none outline-none text-sm" />
+          <div className="relative w-full sm:w-80">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search dishes..." className="w-full pl-9 pr-3 py-2 border border-line rounded-lg bg-paper text-ink text-sm focus:border-accent focus:outline-none" />
           </div>
           {canManage && (
             <button type="button" onClick={openAddModal} className="bg-accent text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-accent-ink transition-colors flex items-center gap-2">
@@ -167,31 +167,31 @@ export default function MenuPage() {
             const imagePath = getImagePath(m.image);
             return (
               <div key={m.id} className={`bg-surface border border-line rounded-xl shadow-sm flex flex-col overflow-hidden border-l-4 ${m.status === 'available' ? 'border-l-herb' : 'border-l-danger'}`}>
-                <div className="mi-photo h-24">
+                <div className="relative w-full h-40 bg-stone-100 overflow-hidden">
                   {imagePath ? (
-                    <>
-                      <img src={imagePath} alt={m.name} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.dispatchEvent(new Event('show-fallback')); }} />
-                      <span className="mi-photo-fallback" style={{ display: 'none' }}>{m.name.charAt(0)}</span>
-                    </>
-                  ) : (
-                    <span className="mi-photo-fallback">{m.name.charAt(0)}</span>
+                    <img src={imagePath} alt={m.name} loading="lazy" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  ) : null}
+                  {!imagePath && (
+                    <div className="absolute inset-0 flex items-center justify-center text-muted text-2xl font-bold bg-stone-200">
+                      {m.name.charAt(0)}
+                    </div>
                   )}
                 </div>
                 <div className="p-3 flex flex-col gap-1.5 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-semibold text-sm text-ink truncate">{escapeHtml(m.name)}</h3>
                       <p className="text-[11px] text-muted truncate">{escapeHtml(m.category)}</p>
                     </div>
-                    <span className="mi-price text-[11px]">{money(m.price)}</span>
+                    <span className="text-xs font-semibold text-accent-ink whitespace-nowrap">{money(m.price)}</span>
                   </div>
                   <p className="text-[11px] text-muted line-clamp-2 leading-snug">{escapeHtml(m.description || '')}</p>
                   <div className="mt-auto flex items-center justify-between pt-2">
                     <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${m.status === 'available' ? 'bg-herb-tint text-herb' : 'bg-stone-200 text-muted'}`}>{m.status}</span>
                     {canManage && (
                       <div className="flex gap-1">
-                        <button type="button" onClick={() => openEditModal(m)} className="icon-btn px-1.5 py-0.5 text-[10px]">✎</button>
-                        <button type="button" onClick={() => deleteItem(m.id)} className="icon-btn px-1.5 py-0.5 text-[10px] text-danger hover:border-danger">🗑</button>
+                        <button type="button" onClick={() => openEditModal(m)} className="p-1.5 rounded-md hover:bg-stone-100 text-xs text-ink-soft hover:text-accent-ink transition-colors">✎</button>
+                        <button type="button" onClick={() => deleteItem(m.id)} className="p-1.5 rounded-md hover:bg-stone-100 text-xs text-danger hover:bg-danger-tint transition-colors">🗑</button>
                       </div>
                     )}
                   </div>
@@ -242,8 +242,8 @@ export default function MenuPage() {
             <div>
               <label className="block text-xs font-semibold text-ink-soft mb-2">Photo (optional)</label>
               <div className="flex items-center gap-4">
-                <div className="photo-preview">
-                  {pendingImage ? <img src={pendingImage} alt="" /> : <span>No photo</span>}
+                <div className="w-20 h-20 rounded-lg border border-line bg-stone-100 overflow-hidden flex items-center justify-center text-muted text-xs">
+                  {pendingImage ? <img src={pendingImage} alt="" className="w-full h-full object-cover" /> : <span>No photo</span>}
                 </div>
                 <div className="flex flex-col gap-2">
                   <input type="file" id="mi-photo-input" accept="image/*" className="hidden" onChange={handleFileChange} ref={fileInputRef} />
@@ -262,7 +262,7 @@ export default function MenuPage() {
                       {inventory.map(inv => <option key={inv.id} value={inv.id}>{escapeHtml(inv.name)} ({inv.unit})</option>)}
                     </select>
                     <input type="number" step="0.01" min="0" value={r.qty} onChange={e => setRecipeRows(prev => prev.map((row, i) => i === idx ? { ...row, qty: Number(e.target.value) } : row))} className="w-20 border border-line rounded-lg px-3 py-2 bg-paper text-sm" />
-                    <button type="button" onClick={() => setRecipeRows(prev => prev.filter((_, i) => i !== idx))} className="icon-btn px-2 py-1 text-xs">✕</button>
+                    <button type="button" onClick={() => setRecipeRows(prev => prev.filter((_, i) => i !== idx))} className="p-1.5 rounded-md hover:bg-stone-100 text-xs text-danger hover:border-danger transition-colors">✕</button>
                   </div>
                 ))}
               </div>

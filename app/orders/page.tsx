@@ -28,7 +28,7 @@ export default function OrdersPage() {
   const [menuSearch, setMenuSearch] = useState('');
   const [menuCategory, setMenuCategory] = useState('All');
   const [selectedTableId, setSelectedTableId] = useState('');
-  const [settings, setSettings] = useState<Settings>({ taxRate: 0.08, currency: '৳', restaurantName: 'Restaurant' });
+  const [settings, setSettings] = useState<Settings>({ taxRate: 0.08, currency: 'BDT', restaurantName: 'Restaurant' });
 
   const loadData = async () => {
     const [tablesData, ordersData, menuData, inventoryData, settingsData] = await Promise.all([

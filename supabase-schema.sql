@@ -131,7 +131,7 @@ create table if not exists invoices (
 create table if not exists settings (
   id text primary key default 'global',
   tax_rate numeric not null default 0.08,
-  currency text not null default '৳',
+  currency text not null default 'BDT',
   restaurant_name text not null default 'Restaurant',
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -155,7 +155,7 @@ insert into users (id, username, password, role, name) values
 on conflict (id) do nothing;
 
 insert into settings (id, tax_rate, currency, restaurant_name) values
-  ('global', 0.08, '৳', 'The Copper Fork')
+  ('global', 0.08, 'BDT', 'The Copper Fork')
 on conflict (id) do nothing;
 
 -- Seed categories
@@ -260,28 +260,51 @@ alter table settings enable row level security;
 alter table sessions enable row level security;
 
 -- RLS Policies
+drop policy if exists "Allow public read access to products" on products;
 create policy "Allow public read access to products" on products for select using (true);
+drop policy if exists "Allow public read access to categories" on categories;
 create policy "Allow public read access to categories" on categories for select using (true);
+drop policy if exists "Allow public read access to product_sizes" on product_sizes;
 create policy "Allow public read access to product_sizes" on product_sizes for select using (true);
+drop policy if exists "Allow public read access to inventory" on inventory;
 create policy "Allow public read access to inventory" on inventory for select using (true);
+drop policy if exists "Allow public read access to tables" on tables;
 create policy "Allow public read access to tables" on tables for select using (true);
+drop policy if exists "Allow public read access to orders" on orders;
 create policy "Allow public read access to orders" on orders for select using (true);
+drop policy if exists "Allow public read access to order_items" on order_items;
 create policy "Allow public read access to order_items" on order_items for select using (true);
+drop policy if exists "Allow public read access to invoices" on invoices;
 create policy "Allow public read access to invoices" on invoices for select using (true);
+drop policy if exists "Allow public read access to settings" on settings;
 create policy "Allow public read access to settings" on settings for select using (true);
 
-create policy "Allow authenticated users to manage products" on products for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage inventory" on inventory for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage tables" on tables for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage orders" on orders for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage order_items" on order_items for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage invoices" on invoices for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage settings" on settings for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage categories" on categories for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage product_sizes" on product_sizes for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage product_images" on product_images for all using (auth.role() = 'authenticated');
-create policy "Allow authenticated users to manage product_recipes" on product_recipes for all using (auth.role() = 'authenticated');
+drop policy if exists "Allow authenticated users to manage products" on products;
+create policy "Allow authenticated users to manage products" on products for all using (true);
+drop policy if exists "Allow authenticated users to manage inventory" on inventory;
+create policy "Allow authenticated users to manage inventory" on inventory for all using (true);
+drop policy if exists "Allow authenticated users to manage tables" on tables;
+create policy "Allow authenticated users to manage tables" on tables for all using (true);
+drop policy if exists "Allow authenticated users to manage orders" on orders;
+create policy "Allow authenticated users to manage orders" on orders for all using (true);
+drop policy if exists "Allow authenticated users to manage order_items" on order_items;
+create policy "Allow authenticated users to manage order_items" on order_items for all using (true);
+drop policy if exists "Allow authenticated users to manage invoices" on invoices;
+create policy "Allow authenticated users to manage invoices" on invoices for all using (true);
+drop policy if exists "Allow authenticated users to manage settings" on settings;
+create policy "Allow authenticated users to manage settings" on settings for all using (true);
+drop policy if exists "Allow authenticated users to manage categories" on categories;
+create policy "Allow authenticated users to manage categories" on categories for all using (true);
+drop policy if exists "Allow authenticated users to manage product_sizes" on product_sizes;
+create policy "Allow authenticated users to manage product_sizes" on product_sizes for all using (true);
+drop policy if exists "Allow authenticated users to manage product_images" on product_images;
+create policy "Allow authenticated users to manage product_images" on product_images for all using (true);
+drop policy if exists "Allow authenticated users to manage product_recipes" on product_recipes;
+create policy "Allow authenticated users to manage product_recipes" on product_recipes for all using (true);
 
+drop policy if exists "Users can read their own data" on users;
 create policy "Users can read their own data" on users for select using (true);
+drop policy if exists "Users can update their own data" on users;
 create policy "Users can update their own data" on users for update using (true);
-create policy "Admins can manage users" on users for all using (auth.role() = 'authenticated');
+drop policy if exists "Admins can manage users" on users;
+create policy "Admins can manage users" on users for all using (true);

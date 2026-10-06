@@ -1,5 +1,6 @@
 export function money(n: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+  const formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return `BDT ${formatted}`;
 }
 
 export function fmtDateTime(iso: string): string {

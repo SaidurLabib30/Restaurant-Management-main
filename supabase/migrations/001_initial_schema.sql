@@ -99,7 +99,7 @@ create table if not exists public.invoices (
 create table if not exists public.settings (
   id text primary key default 'global',
   tax_rate numeric not null default 0.08,
-  currency text not null default '৳',
+  currency text not null default 'BDT',
   restaurant_name text not null default 'Restaurant',
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -150,152 +150,110 @@ alter table public.settings enable row level security;
 -- RLS POLICIES - USERS
 -- ============================================
 
--- All authenticated users can read users (needed for login)
-create policy "Allow authenticated users to read users"
+drop policy if exists "Allow public read access to users" on public.users;
+create policy "Allow public read access to users"
   on public.users for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
--- Only admins and managers can insert/update/delete users
-create policy "Allow admin and manager to manage users"
+drop policy if exists "Allow public write access to users" on public.users;
+create policy "Allow public write access to users"
   on public.users for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - MENU ITEMS
 -- ============================================
 
--- Public read access for menu items
+drop policy if exists "Allow public read access to menu items" on public.menu_items;
 create policy "Allow public read access to menu items"
   on public.menu_items for select
   to anon, authenticated
   using (true);
 
--- Authenticated users can manage menu items
-create policy "Allow authenticated users to manage menu items"
+drop policy if exists "Allow public write access to menu items" on public.menu_items;
+create policy "Allow public write access to menu items"
   on public.menu_items for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - TABLES
 -- ============================================
 
--- Public read access for tables
+drop policy if exists "Allow public read access to tables" on public.tables;
 create policy "Allow public read access to tables"
   on public.tables for select
   to anon, authenticated
   using (true);
 
--- Authenticated users can manage tables
-create policy "Allow authenticated users to manage tables"
+drop policy if exists "Allow public write access to tables" on public.tables;
+create policy "Allow public write access to tables"
   on public.tables for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager', 'waiter')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - INVENTORY
 -- ============================================
 
--- Public read access for inventory
+drop policy if exists "Allow public read access to inventory" on public.inventory;
 create policy "Allow public read access to inventory"
   on public.inventory for select
   to anon, authenticated
   using (true);
 
--- Authenticated users can manage inventory
-create policy "Allow authenticated users to manage inventory"
+drop policy if exists "Allow public write access to inventory" on public.inventory;
+create policy "Allow public write access to inventory"
   on public.inventory for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - ORDERS
 -- ============================================
 
--- Public read access for orders
+drop policy if exists "Allow public read access to orders" on public.orders;
 create policy "Allow public read access to orders"
   on public.orders for select
   to anon, authenticated
   using (true);
 
--- Authenticated users can manage orders
-create policy "Allow authenticated users to manage orders"
+drop policy if exists "Allow public write access to orders" on public.orders;
+create policy "Allow public write access to orders"
   on public.orders for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager', 'waiter', 'kitchen')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - INVOICES
 -- ============================================
 
--- Public read access for invoices
+drop policy if exists "Allow public read access to invoices" on public.invoices;
 create policy "Allow public read access to invoices"
   on public.invoices for select
   to anon, authenticated
   using (true);
 
--- Authenticated users can manage invoices
-create policy "Allow authenticated users to manage invoices"
+drop policy if exists "Allow public write access to invoices" on public.invoices;
+create policy "Allow public write access to invoices"
   on public.invoices for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager', 'waiter')
-    )
-  );
+  to anon, authenticated
+  using (true);
 
 -- ============================================
 -- RLS POLICIES - SETTINGS
 -- ============================================
 
--- Public read access for settings
+drop policy if exists "Allow public read access to settings" on public.settings;
 create policy "Allow public read access to settings"
   on public.settings for select
   to anon, authenticated
   using (true);
 
--- Only admins and managers can update settings
-create policy "Allow admin and manager to manage settings"
+drop policy if exists "Allow public write access to settings" on public.settings;
+create policy "Allow public write access to settings"
   on public.settings for all
-  to authenticated
-  using (
-    exists (
-      select 1 from public.users
-      where users.id = auth.uid()::text
-      and users.role in ('admin', 'manager')
-    )
-  );
+  to anon, authenticated
+  using (true);

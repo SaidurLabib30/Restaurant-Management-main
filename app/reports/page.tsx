@@ -42,8 +42,6 @@ export default function ReportsPage() {
     return cleanup;
   }, [session]);
 
-  if (!session) return null;
-
   const rangeDates = () => {
     const now = new Date();
     let from: Date, to: Date = new Date(now);
@@ -91,6 +89,8 @@ export default function ReportsPage() {
   const sortedInvoices = useMemo(() => {
     return [...filteredInvoices].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [filteredInvoices]);
+
+  if (!session) return null;
 
   return (
     <AppShell activePath="/reports">

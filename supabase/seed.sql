@@ -17,7 +17,7 @@ on conflict (id) do nothing;
 -- SETTINGS
 -- ============================================
 insert into public.settings (id, tax_rate, currency, restaurant_name) values
-  ('global', 0.08, '৳', 'The Copper Fork')
+  ('global', 0.08, 'BDT', 'The Copper Fork')
 on conflict (id) do nothing;
 
 -- ============================================
